@@ -1,0 +1,6 @@
+framework module Pods_CDAuthorizationTool_Tests {
+  umbrella header "Pods-CDAuthorizationTool_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}

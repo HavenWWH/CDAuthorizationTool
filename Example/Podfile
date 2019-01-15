@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '8.0'
+
+target 'CDAuthorizationTool_Example' do
+  pod 'CDAuthorizationTool', :path => '../'
+
+  target 'CDAuthorizationTool_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

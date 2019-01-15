@@ -1,0 +1,16 @@
+PODS:
+  - CDAuthorizationTool (0.0.1)
+
+DEPENDENCIES:
+  - CDAuthorizationTool (from `../`)
+
+EXTERNAL SOURCES:
+  CDAuthorizationTool:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  CDAuthorizationTool: d75b2bebaf796f23d400426c38c722e2d112957f
+
+PODFILE CHECKSUM: 76093015ecd824fcbd9f650022ea87156771acc1
+
+COCOAPODS: 1.6.0.beta.2

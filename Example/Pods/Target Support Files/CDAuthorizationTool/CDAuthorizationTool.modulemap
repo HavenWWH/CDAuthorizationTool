@@ -1,0 +1,6 @@
+framework module CDAuthorizationTool {
+  umbrella header "CDAuthorizationTool-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "CDAuthorizationTool",
+  "platforms": {
+    "ios": "8.0"
+  },
+  "version": "0.0.1",
+  "summary": "请求iOS各类权限",
+  "description": "请求iOS各类权限",
+  "homepage": "https://gitlab.ttsing.com/ios/CDAuthorizationTool",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "cqz": "cqz@ttsing.com"
+  },
+  "source": {
+    "git": "git@gitlab.ttsing.com:ios/CDAuthorizationTool.git",
+    "tag": "0.0.1"
+  },
+  "source_files": "CDAuthorizationTool/*.{h,m}"
+}

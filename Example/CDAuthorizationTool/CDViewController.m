@@ -7,17 +7,46 @@
 //
 
 #import "CDViewController.h"
+#import "CDAuthorizationTool.h"
 
 @interface CDViewController ()
+
 
 @end
 
 @implementation CDViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    
+    
+//    [CDAuthorizationTool requestRecordingAuthorization:^(CDAuthorizationStatus status, BOOL isFirst) {
+//
+//        NSLog(@"授权：%@", isFirst ? @"是第一次授权" : @"不是第一次授权");
+//
+//        if (status == CDAuthorizationStatusAuthorized) {
+//
+//            NSLog(@"已经授权");
+//        } else if (status == CDAuthorizationStatusDenied) {
+//
+//            NSLog(@"用户拒绝");
+//        }
+//    }];
+    
+    [CDAuthorizationTool requestAddressBookAuthorization:^(CDAuthorizationStatus status, BOOL isFirst) {
+        
+        NSLog(@"授权：%@", isFirst ? @"是第一次授权" : @"不是第一次授权");
+        
+        if (status == CDAuthorizationStatusAuthorized) {
+            
+            NSLog(@"已经授权");
+        } else if (status == CDAuthorizationStatusDenied) {
+            
+            NSLog(@"用户拒绝");
+        }
+    }];
+    
 }
 
 - (void)didReceiveMemoryWarning

@@ -22,7 +22,7 @@ typedef NS_ENUM(NSUInteger, CDAuthorizationStatus) {
  
  @param callback 是否授权
  */
-+ (void)requestImagePickerAuthorization:(void(^)(CDAuthorizationStatus status))callback;
++ (void)requestImagePickerAuthorization:(void(^)(CDAuthorizationStatus status, BOOL isFirst))callback;
 
 
 /**
@@ -30,7 +30,7 @@ typedef NS_ENUM(NSUInteger, CDAuthorizationStatus) {
  
  @param callback 是否授权
  */
-+ (void)requestCameraAuthorization:(void(^)(CDAuthorizationStatus status))callback;
++ (void)requestCameraAuthorization:(void(^)(CDAuthorizationStatus status, BOOL isFirst))callback;
 
 
 /**
@@ -38,7 +38,7 @@ typedef NS_ENUM(NSUInteger, CDAuthorizationStatus) {
  
  @param callback 是否授权
  */
-+ (void)requestAddressBookAuthorization:(void (^)(CDAuthorizationStatus status))callback;
++ (void)requestAddressBookAuthorization:(void (^)(CDAuthorizationStatus status, BOOL isFirst))callback;
 
 
 /**
@@ -46,6 +46,6 @@ typedef NS_ENUM(NSUInteger, CDAuthorizationStatus) {
  
  @param callback 是否授权
  */
-+ (void)requestRecordingAuthorization:(void (^)(CDAuthorizationStatus status))callback;
++ (void)requestRecordingAuthorization:(void (^)(CDAuthorizationStatus status, BOOL isFirst))callback;
 
 @end

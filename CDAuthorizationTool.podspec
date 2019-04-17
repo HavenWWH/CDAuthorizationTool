@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.platform     = :ios, "8.0"
   s.name             = 'CDAuthorizationTool'
-  s.version          = '0.0.1'
+  s.version          = '0.0.2'
   s.summary          = '请求iOS各类权限'
 
 # This description is used to generate tags and improve search results.

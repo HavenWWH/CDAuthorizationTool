@@ -3,7 +3,7 @@
   "platforms": {
     "ios": "8.0"
   },
-  "version": "0.0.1",
+  "version": "1.0.0",
   "summary": "请求iOS各类权限",
   "description": "请求iOS各类权限",
   "homepage": "https://gitlab.ttsing.com/ios/CDAuthorizationTool",
@@ -16,7 +16,7 @@
   },
   "source": {
     "git": "git@gitlab.ttsing.com:ios/CDAuthorizationTool.git",
-    "tag": "0.0.1"
+    "tag": "1.0.0"
   },
   "source_files": "CDAuthorizationTool/*.{h,m}"
 }

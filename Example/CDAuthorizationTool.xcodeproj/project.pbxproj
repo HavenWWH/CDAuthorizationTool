@@ -261,6 +261,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -303,15 +304,11 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CDAuthorizationTool_Example/Pods-CDAuthorizationTool_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/CDAuthorizationTool/CDAuthorizationTool.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CDAuthorizationTool.framework",
 			);
@@ -506,7 +503,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CDAuthorizationTool/CDAuthorizationTool-Prefix.pch";
 				INFOPLIST_FILE = "CDAuthorizationTool/CDAuthorizationTool-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ChangDaoTest.CDAuthorizationTool-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -525,7 +522,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CDAuthorizationTool/CDAuthorizationTool-Prefix.pch";
 				INFOPLIST_FILE = "CDAuthorizationTool/CDAuthorizationTool-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ChangDaoTest.CDAuthorizationTool-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0930"
+   LastUpgradeVersion = "1100"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "80F245F7DB14DF601366E52A87AE6CA6"
+               BlueprintIdentifier = "6F4659C6DBE8C9D94C0043D0B15368E1"
                BuildableName = "Pods_CDAuthorizationTool_Example.framework"
                BlueprintName = "Pods-CDAuthorizationTool_Example"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "80F245F7DB14DF601366E52A87AE6CA6"
+            BlueprintIdentifier = "6F4659C6DBE8C9D94C0043D0B15368E1"
             BuildableName = "Pods_CDAuthorizationTool_Example.framework"
             BlueprintName = "Pods-CDAuthorizationTool_Example"
             ReferencedContainer = "container:Pods.xcodeproj">

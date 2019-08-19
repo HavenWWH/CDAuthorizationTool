@@ -14,138 +14,298 @@
 
 @implementation CDAuthorizationTool
 
-#pragma mark - 相册
-+ (void)requestImagePickerAuthorization:(void(^)(CDAuthorizationStatus status, BOOL isFirst))callback {
++ (void)requestPrivacyType:(CDPrivacyType)type authorizationStatus:(void(^)(CDAuthorizationStatus status, BOOL isFirstAuthorization))callback {
     
-    __block BOOL isF = false;
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] ||
-        [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-        
-        ALAuthorizationStatus authStatus = [ALAssetsLibrary authorizationStatus];
-        if (authStatus == ALAuthorizationStatusNotDetermined) { // 未授权
-            if ([UIDevice currentDevice].systemVersion.floatValue < 8.0) {
-                [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:isF];
-            } else {
-                [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-                    
-                    isF = true;
-                    if (status == PHAuthorizationStatusAuthorized) {
-                        [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:isF];
-                    } else if (status == PHAuthorizationStatusDenied) {
-                        [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:isF];
-                    } else if (status == PHAuthorizationStatusRestricted) {
-                        [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:isF];
-                    }
-                }];
-            }
+    
+    switch (type) {
+        case CDPrivacyTypePhotos: { //照片
             
-        } else if (authStatus == ALAuthorizationStatusAuthorized) {
-            [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:isF];
-        } else if (authStatus == ALAuthorizationStatusDenied) {
-            
-            [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:isF];
-        } else if (authStatus == ALAuthorizationStatusRestricted) {
-            [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:isF];
+            [self requestImagePickerAuthorization:callback];
+            break;
         }
-    } else {
-        [self executeCallback:callback status:CDAuthorizationStatusNotSupport requestFirst:isF];
+        case CDPrivacyTypeCamera: { //相机
+            
+            [self requestCameraAuthorization:callback];
+            break;
+        }
+        case CDPrivacyTypeMicrophone: { //麦克风
+            
+            [self requestMicrophoneAuthorization:callback];
+            break;
+        }
+        case CDPrivacyTypeAddressBook: { //通讯录
+            
+            [self requestAddressBookAuthorization:callback];
+            break;
+        }
+        case CDPrivacyTypeCalendars: { // 日历
+            
+            [self requestCalendarsAuthorization:callback];
+            break;
+        }
+        case CDPrivacyTypeReminders: { //提醒事项
+            
+            [self requestRemindersAuthorization:callback];
+            break;
+        }
+        case CDPrivacyTypeSpeechRecognition: { //语音识别
+            
+            [self requestSpeechRecognitionAuthorization:callback];
+            break;
+        }
+        default:
+            break;
     }
 }
 
-#pragma mark - 相机
-+ (void)requestCameraAuthorization:(void(^)(CDAuthorizationStatus status, BOOL isFirst))callback {
+//MARK: -相册
++ (void)requestImagePickerAuthorization:(void(^)(CDAuthorizationStatus status, BOOL isFirstAuthorization))callback {
     
-    __block BOOL isF = false;
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+        
+        PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+        
+        if (status == PHAuthorizationStatusNotDetermined) { // 用户尚未做出选择
+            
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                
+                if (status == PHAuthorizationStatusRestricted) {
+                    
+                    [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:true];
+                    
+                } else if (status == PHAuthorizationStatusDenied) {
+                    [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:true];
+                    
+                } else {
+                    // PHAuthorizationStatusAuthorized
+                    [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:true];
+                }
+            }];
+            
+        } else if (status == PHAuthorizationStatusRestricted) {
+            
+            [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:false];
+            
+        } else if (status == PHAuthorizationStatusDenied) {
+            [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:false];
+            
+        } else {
+            // PHAuthorizationStatusAuthorized
+            [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:false];
+        }
+
+    } else {
+        
+        [self executeCallback:callback status:CDAuthorizationStatusNotSupport requestFirst:false];
+    }
+}
+
+//MARK: -相机
++ (void)requestCameraAuthorization:(void(^)(CDAuthorizationStatus status, BOOL isFirstAuthorization))callback {
+    
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        
         AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
         if (authStatus == AVAuthorizationStatusNotDetermined) {
             [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
                 
-                isF = true;
                 if (granted) {
-                    [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:isF];
+                    [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:true];
                 } else {
-                    [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:isF];
+                    [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:true];
                 }
             }];
         } else if (authStatus == AVAuthorizationStatusAuthorized) {
-            [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:isF];
+            [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:false];
         } else if (authStatus == AVAuthorizationStatusDenied) {
-            [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:isF];
+            [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:false];
         } else if (authStatus == AVAuthorizationStatusRestricted) {
-            [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:isF];
+            [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:false];
         }
-    } else {
-        [self executeCallback:callback status:CDAuthorizationStatusNotSupport requestFirst:isF];
-    }
-}
-#pragma mark - 通讯录
-+ (void)requestAddressBookAuthorization:(void (^)(CDAuthorizationStatus status, BOOL isFirst))callback {
-    
-    __block BOOL isF = false;
-    ABAuthorizationStatus authStatus = ABAddressBookGetAuthorizationStatus();
-    if (authStatus == kABAuthorizationStatusNotDetermined) {
-        __block ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
-        if (addressBook == NULL) {
-            [self executeCallback:callback status:CDAuthorizationStatusNotSupport requestFirst:isF];
-            return;
-        }
-        ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
-            
-            isF = true;
-            if (granted) {
-                [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:isF];
-            } else {
-                [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:isF];
-            }
-            if (addressBook) {
-                CFRelease(addressBook);
-                addressBook = NULL;
-            }
-        });
-        return;
-    } else if (authStatus == kABAuthorizationStatusAuthorized) {
-        [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:isF];
-    } else if (authStatus == kABAuthorizationStatusDenied) {
-        [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:isF];
-    } else if (authStatus == kABAuthorizationStatusRestricted) {
-        [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:isF];
-    }
-}
 
-//MARK: 录音权限
-+ (void)requestRecordingAuthorization:(void (^)(CDAuthorizationStatus status, BOOL isFirst))callback {
+    } else {
+
+        [self executeCallback:callback status:CDAuthorizationStatusNotSupport requestFirst:false];
+    }
+}
+//MARK: - 麦克风
++ (void)requestMicrophoneAuthorization:(void (^)(CDAuthorizationStatus status, BOOL isFirst))callback {
     
-    __block BOOL isF = false;
     AVAuthorizationStatus recordAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
     if (recordAuthStatus == AVAuthorizationStatusNotDetermined) {
         
         [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
             
-            isF = true;
             if (granted) {
-                [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:isF];
+                [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:true];
             } else {
-                [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:isF];
+                [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:true];
             }
         }];
     } else if (recordAuthStatus == AVAuthorizationStatusAuthorized) {
-        [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:isF];
+        [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:false];
     } else if (recordAuthStatus == AVAuthorizationStatusDenied) {
-        [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:isF];
+        [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:false];
     } else if (recordAuthStatus == AVAuthorizationStatusRestricted) {
-        [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:isF];
+        [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:false];
+    }
+}
+//MARK: - 通讯录
++ (void)requestAddressBookAuthorization:(void (^)(CDAuthorizationStatus status, BOOL isFirst))callback {
+
+    if (@available(iOS 9.0, *)) {
+        
+        CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
+        if (status == CNAuthorizationStatusNotDetermined) {
+            
+            CNContactStore *contactStore = [[CNContactStore alloc] init];
+            if (contactStore == NULL) {
+                
+                [self executeCallback:callback status:CDAuthorizationStatusNotSupport requestFirst:true];
+            }
+            [contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                
+                if (error) {
+                    [self executeCallback:callback status:CDAuthorizationStatusNotSupport requestFirst:true];
+                }else{
+                    if (granted) {
+                        [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:true];
+                    }else{
+                        [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:true];
+                    }
+                }
+            }];
+        }else if (status == CNAuthorizationStatusRestricted) {
+            [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:false];
+        }else if (status == CNAuthorizationStatusDenied) {
+            [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:false];
+        }else{
+            // CNAuthorizationStatusAuthorized
+            [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:false];
+        }
+
     }
 }
 
+//MARK: - 日历
++ (void)requestCalendarsAuthorization:(void (^)(CDAuthorizationStatus status, BOOL isFirst))callback {
+    
+    EKAuthorizationStatus status = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
+    if (status == EKAuthorizationStatusNotDetermined) {
+        
+        EKEventStore *store = [[EKEventStore alloc] init];
+        if (store == NULL) {
+            [self executeCallback:callback status:CDAuthorizationStatusNotSupport requestFirst:true];
+        }else{
+            [store requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError * _Nullable error) {
+                if (error) {
+                    [self executeCallback:callback status:CDAuthorizationStatusNotSupport requestFirst:true];
+                }
+                if (granted) {
+                    [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:true];
+
+                }else{
+                    [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:true];
+                }
+            }];
+        }
+    } else if (status == EKAuthorizationStatusRestricted) {
+        [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:false];
+
+    } else if (status == EKAuthorizationStatusDenied) {
+        [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:false];
+
+    } else {
+        // EKAuthorizationStatusAuthorized
+        [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:false];
+    }
+
+}
+//MARK: - 提醒事项
++ (void)requestRemindersAuthorization:(void (^)(CDAuthorizationStatus status, BOOL isFirst))callback {
+    
+    EKAuthorizationStatus status = [EKEventStore authorizationStatusForEntityType:EKEntityTypeReminder];
+    
+    if (status == EKAuthorizationStatusNotDetermined) {
+        
+        EKEventStore *store = [[EKEventStore alloc] init];
+        if (store == NULL) {
+            [self executeCallback:callback status:CDAuthorizationStatusNotSupport requestFirst:true];
+
+        }else{
+            [store requestAccessToEntityType:EKEntityTypeReminder completion:^(BOOL granted, NSError * _Nullable error) {
+                if (error) {
+                    [self executeCallback:callback status:CDAuthorizationStatusNotSupport requestFirst:true];
+                }
+                if (granted) {
+                    [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:true];
+                }else{
+                    [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:true];
+                }
+            }];
+        }
+        
+    } else if (status == EKAuthorizationStatusRestricted) {
+        [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:false];
+
+    } else if (status == EKAuthorizationStatusDenied) {
+        [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:false];
+    } else {
+        // EKAuthorizationStatusAuthorized
+        [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:false];
+    }
+
+}
+//MARK: - 语音识别
++ (void)requestSpeechRecognitionAuthorization:(void (^)(CDAuthorizationStatus status, BOOL isFirst))callback {
+    
+
+    if (@available(iOS 10.0, *)) {
+        SFSpeechRecognizerAuthorizationStatus status = [SFSpeechRecognizer authorizationStatus];
+        
+        if (status == SFSpeechRecognizerAuthorizationStatusNotDetermined) {
+            
+            [SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus status) {
+                
+                if (status == SFSpeechRecognizerAuthorizationStatusNotDetermined) {
+                    
+                    [self executeCallback:callback status:CDAuthorizationStatusNotSupport requestFirst:true];
+                } else if (status == SFSpeechRecognizerAuthorizationStatusDenied) {
+                    
+                    [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:true];
+                } else if (status == SFSpeechRecognizerAuthorizationStatusRestricted) {
+                    
+                    [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:true];
+                } else {
+                    // SFSpeechRecognizerAuthorizationStatusAuthorized
+                    [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:true];
+                }
+            }];
+            
+        } else if (status == SFSpeechRecognizerAuthorizationStatusDenied) {
+            [self executeCallback:callback status:CDAuthorizationStatusDenied requestFirst:false];
+
+        } else if (status == SFSpeechRecognizerAuthorizationStatusRestricted) {
+            [self executeCallback:callback status:CDAuthorizationStatusRestricted requestFirst:false];
+
+        } else {
+            // SFSpeechRecognizerAuthorizationStatusAuthorized
+            [self executeCallback:callback status:CDAuthorizationStatusAuthorized requestFirst:false];
+        }
+    } else {
+        
+        [self executeCallback:callback status:CDAuthorizationStatusNotSupport requestFirst:false];
+    }
+
+}
 #pragma mark - callback
-+ (void)executeCallback:(void (^)(CDAuthorizationStatus status, BOOL isFirst))callback status:(CDAuthorizationStatus)status requestFirst:(BOOL)isFirst {
++ (void)executeCallback:(void (^)(CDAuthorizationStatus status, BOOL isFirstAuthorization))callback status:(CDAuthorizationStatus)status requestFirst:(BOOL)isFirstAuthorization {
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         if (callback) {
-            callback(status, isFirst);
+            callback(status, isFirstAuthorization);
         }
     });
 }
-
 
 @end

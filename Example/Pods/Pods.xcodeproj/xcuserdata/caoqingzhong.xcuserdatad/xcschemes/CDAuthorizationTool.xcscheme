@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0930"
+   LastUpgradeVersion = "1100"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A0BA052911B9AF42728FC290C279B280"
+               BlueprintIdentifier = "FE41F2CDE52558567180ECEFA1B52F31"
+               BuildableName = "CDAuthorizationTool.framework"
                BlueprintName = "CDAuthorizationTool"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "CDAuthorizationTool.framework">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
